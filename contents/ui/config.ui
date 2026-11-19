@@ -102,12 +102,12 @@
       </layout>
      </widget>
 
-     <!-- TAB 2: GAPS & BORDERS -->
-     <widget class="QWidget" name="tabGapsBorders">
+     <!-- TAB 2: GAPS -->
+     <widget class="QWidget" name="tabGaps">
       <attribute name="title">
-       <string>Window Gaps &amp; Theme Borders</string>
+       <string>Window Gaps</string>
       </attribute>
-      <layout class="QVBoxLayout" name="gapsBordersLayout">
+      <layout class="QVBoxLayout" name="gapsLayout">
        <item>
         <widget class="QGroupBox" name="gapsGroup">
          <property name="title">
@@ -181,60 +181,6 @@
            <widget class="QSpinBox" name="kcfg_OuterGapRight">
             <property name="maximum">
              <number>200</number>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
-       </item>
-
-       <item>
-        <widget class="QGroupBox" name="bordersGroup">
-         <property name="title">
-          <string>Borders &amp; Plasma Theme Colors</string>
-         </property>
-         <layout class="QVBoxLayout" name="bordersVBox">
-          <item>
-           <layout class="QHBoxLayout" name="borderModeRow">
-            <item>
-             <widget class="QLabel" name="borderModeLabel">
-              <property name="text">
-               <string>Border Mode:</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QComboBox" name="kcfg_BorderMode">
-              <item>
-               <property name="text">
-                <string>theme</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>active</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>none</string>
-               </property>
-              </item>
-             </widget>
-            </item>
-           </layout>
-          </item>
-          <item>
-           <widget class="QCheckBox" name="kcfg_KeepBorderSingle">
-            <property name="text">
-             <string>Keep borders when only 1 tiled window is on screen</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QCheckBox" name="kcfg_RestoreBorderFloat">
-            <property name="text">
-             <string>Restore original window borders when untiled/floated</string>
             </property>
            </widget>
           </item>

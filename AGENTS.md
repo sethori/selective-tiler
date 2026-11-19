@@ -2,7 +2,7 @@
 
 ## What this project is
 
-Selective Tiler is a KWin 6 script for KDE Plasma 6. It tiles only the apps you opt into (an allowlist of window classes) and leaves everything else floating. It offers master-stack (multi-master) and dwindle layouts, a per-window float toggle, gaps and border modes, and it reloads its config live when you click Apply in System Settings. It's a personal tool that's also shared publicly through GitHub releases. Success means it's stable enough for daily use without fighting KWin.
+Selective Tiler is a KWin 6 script for KDE Plasma 6. It tiles only the apps you opt into (an allowlist of window classes) and leaves everything else floating. It offers master-stack (multi-master) and dwindle layouts, a per-window float toggle and gaps, and it reloads its config live when you click Apply in System Settings. It's a personal tool that's also shared publicly through GitHub releases. Success means it's stable enough for daily use without fighting KWin.
 
 - `metadata.json`: KPackage metadata (id `selective-tiler`). `Version` is a placeholder (`0.0.0`).
 - `contents/code/main.js`: the whole script, covering config loading, layout engines, shortcuts and window lifecycle hooks.
@@ -27,7 +27,7 @@ journalctl --user -f | grep -i kwin         # script logs / errors
 ## Things every agent must know
 
 - The API is KWin 6 (`workspace.windowList()`, `activeWindow`, `windowAdded`, `frameGeometry` and so on). KWin 5 / Plasma 5 names don't work. There's no KWin in CI, so tests can't exercise the behaviour.
-- **Ask before you install the script, reload it, or restart KWin/plasmashell**, and never edit `~/.local/share/kwin/scripts/` directly. These act on the owner's live desktop: a bad script can scramble window geometry or strip window borders.
+- **Ask before you install the script, reload it, or restart KWin/plasmashell**, and never edit `~/.local/share/kwin/scripts/` directly. These act on the owner's live desktop: a bad script can scramble window geometry.
 - **Ask before you change default shortcuts.** They're registered in KWin's global shortcut config and can clash with Plasma defaults.
 - When you add a setting, update all three of `main.xml`, `config.ui` (`kcfg_<Key>`) and `loadConfiguration()` in `main.js`. `tests/test_package.py` checks that they match.
 - Never hand-edit the version in `metadata.json` or the `main.js` header. CI stamps them.

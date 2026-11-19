@@ -7,7 +7,6 @@
  * - Multi-Master Support: Promote without demoting, dynamic master capacity.
  * - Dual Layouts: Master-Stack and Dwindle/Spiral.
  * - Manual Float / Tile toggle per window (Meta+F).
- * - Theme-matched border highlighting (active vs inactive).
  * - Instant live config reload on System Settings "Apply".
  */
 
@@ -29,16 +28,7 @@ const CONFIG = {
     },
 
     // =========================================================================
-    // 3. WINDOW BORDER SETTINGS SECTION
-    // =========================================================================
-    borders: {
-        mode: "theme",           // "theme" | "none" | "active"
-        keepOnSingle: true,      // Keep borders when only 1 tiled window is visible
-        restoreOnFloat: true     // Restore original borders when floating
-    },
-
-    // =========================================================================
-    // 4. LAYOUT & TILING ENGINE SECTION
+    // 3. LAYOUT & TILING ENGINE SECTION
     // =========================================================================
     layout: {
         mode: "master-stack",    // "master-stack" | "dwindle"
@@ -72,10 +62,6 @@ function loadConfiguration() {
     CONFIG.gaps.outerLeft = Number(readConfig("OuterGapLeft", CONFIG.gaps.outerLeft));
     CONFIG.gaps.outerRight = Number(readConfig("OuterGapRight", CONFIG.gaps.outerRight));
 
-    CONFIG.borders.mode = String(readConfig("BorderMode", CONFIG.borders.mode));
-    CONFIG.borders.keepOnSingle = Boolean(readConfig("KeepBorderSingle", CONFIG.borders.keepOnSingle));
-    CONFIG.borders.restoreOnFloat = Boolean(readConfig("RestoreBorderFloat", CONFIG.borders.restoreOnFloat));
-
     CONFIG.layout.mode = String(readConfig("DefaultLayout", CONFIG.layout.mode));
     CONFIG.layout.defaultMasterCount = Math.max(1, Number(readConfig("DefaultMasterCount", CONFIG.layout.defaultMasterCount)));
 
@@ -95,7 +81,6 @@ function getWindowMeta(win) {
     if (!windowStateMap.has(id)) {
         windowStateMap.set(id, {
             isManuallyFloating: null,
-            origNoBorder: Boolean(win.noBorder),
             floatGeometry: {
                 x: win.frameGeometry.x,
                 y: win.frameGeometry.y,
@@ -128,30 +113,6 @@ function shouldTileWindow(win) {
         resName === allowed ||
         resClass.indexOf(allowed) !== -1
     );
-}
-
-function updateWindowBorders(win, isTiled, totalTiled, isActive) {
-    const meta = getWindowMeta(win);
-
-    if (!isTiled) {
-        if (CONFIG.borders.restoreOnFloat) {
-            win.noBorder = meta.origNoBorder;
-        }
-        return;
-    }
-
-    if (totalTiled === 1 && CONFIG.borders.keepOnSingle) {
-        win.noBorder = meta.origNoBorder;
-        return;
-    }
-
-    if (CONFIG.borders.mode === "theme") {
-        win.noBorder = false;
-    } else if (CONFIG.borders.mode === "none") {
-        win.noBorder = true;
-    } else if (CONFIG.borders.mode === "active") {
-        win.noBorder = !isActive;
-    }
 }
 
 function setWindowBounds(win, x, y, w, h) {
@@ -295,7 +256,6 @@ function arrangeSurface(screen, desktop, activity) {
     const currentMode = getSurfaceLayoutMode(surfaceKey);
     const numMaster = getSurfaceMasterCount(surfaceKey);
     const allWindows = workspace.windowList();
-    const activeWin = workspace.activeWindow;
     const tiledList = [];
 
     for (let i = 0; i < allWindows.length; i++) {
@@ -309,8 +269,6 @@ function arrangeSurface(screen, desktop, activity) {
 
         if (shouldTileWindow(win)) {
             tiledList.push(win);
-        } else {
-            updateWindowBorders(win, false, 0, win === activeWin);
         }
     }
 
@@ -323,7 +281,6 @@ function arrangeSurface(screen, desktop, activity) {
         if (win.setMaximize) {
             win.setMaximize(false, false);
         }
-        updateWindowBorders(win, true, count, win === activeWin);
     }
 
     const area = workspace.clientArea(KWin.PlacementArea, screen, desktop);
@@ -357,24 +314,6 @@ function retileAll() {
     }
 }
 
-function onActiveWindowChanged(activeWin) {
-    if (!activeWin || !isManageable(activeWin)) return;
-    const desktop = workspace.currentDesktop;
-    const activity = workspace.currentActivity;
-    const surfaceKey = getSurfaceKey(activeWin.output, desktop, activity);
-    const order = surfaceWindowOrder.get(surfaceKey) || [];
-
-    if (CONFIG.borders.mode === "active") {
-        const all = workspace.windowList();
-        for (let i = 0; i < all.length; i++) {
-            const w = all[i];
-            if (order.indexOf(String(w.internalId)) !== -1) {
-                updateWindowBorders(w, true, order.length, w === activeWin);
-            }
-        }
-    }
-}
-
 // =============================================================================
 // SHORTCUT ACTIONS
 // =============================================================================
@@ -388,7 +327,6 @@ function toggleFloatActiveWindow() {
 
     if (currentlyTiled) {
         meta.isManuallyFloating = true;
-        updateWindowBorders(win, false, 0, true);
         if (meta.floatGeometry) {
             setWindowBounds(
                 win,
@@ -615,7 +553,6 @@ function init() {
     workspace.currentDesktopChanged.connect(retileAll);
     workspace.screensChanged.connect(retileAll);
     workspace.currentActivityChanged.connect(retileAll);
-    workspace.windowActivated.connect(onActiveWindowChanged);
 
     // Live update triggered whenever user hits "Apply" in System Settings
     if (options && options.configChanged) {

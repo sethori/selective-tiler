@@ -6,7 +6,7 @@
                 "Name": "Custom KWin Script"
             }
         ],
-        "Description": "Selective Krohnkite-style tiler with multi-master stack, dwindle mode, manual float toggle, gaps, and theme border handling.",
+        "Description": "Selective Krohnkite-style tiler with multi-master stack, dwindle mode, manual float toggle, and gaps.",
         "Icon": "preferences-system-windows-script-test",
         "Id": "selective-tiler",
         "License": "GPL-3.0",

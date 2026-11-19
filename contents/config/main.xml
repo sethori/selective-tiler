@@ -33,20 +33,6 @@
             <default>10</default>
         </entry>
 
-        <!-- Border Settings -->
-        <entry name="BorderMode" type="String">
-            <label>Border rendering mode (theme, none, active)</label>
-            <default>theme</default>
-        </entry>
-        <entry name="KeepBorderSingle" type="Bool">
-            <label>Keep borders when only 1 tiled window is visible</label>
-            <default>true</default>
-        </entry>
-        <entry name="RestoreBorderFloat" type="Bool">
-            <label>Restore original borders when a window floats</label>
-            <default>true</default>
-        </entry>
-
         <!-- Layout Engine & Multi-Master -->
         <entry name="DefaultLayout" type="String">
             <label>Default tiling layout mode (master-stack or dwindle)</label>
