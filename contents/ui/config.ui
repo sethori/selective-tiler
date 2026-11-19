@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>SelectiveTilerConfig</class>
+ <widget class="QWidget" name="SelectiveTilerConfig">
+  <layout class="QVBoxLayout" name="mainLayout">
+   <item>
+    <widget class="QTabWidget" name="tabWidget">
+     
+     <!-- TAB 1: APPLICATIONS & LAYOUT -->
+     <widget class="QWidget" name="tabGeneral">
+      <attribute name="title">
+       <string>Applications &amp; Layout Mode</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="generalLayout">
+       <item>
+        <widget class="QGroupBox" name="appsGroup">
+         <property name="title">
+          <string>Opt-In Applications (Allowlist)</string>
+         </property>
+         <layout class="QVBoxLayout" name="appsInner">
+          <item>
+           <widget class="QLabel" name="appsHint">
+            <property name="text">
+             <string>Leave empty to auto-tile nothing by default. Enter comma-separated window classes (e.g., konsole, kitty, org.kde.dolphin, code):</string>
+            </property>
+            <property name="wordWrap">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="kcfg_TiledApps"/>
+          </item>
+         </layout>
+        </widget>
+       </item>
+
+       <item>
+        <widget class="QGroupBox" name="layoutGroup">
+         <property name="title">
+          <string>Tiling Layout</string>
+         </property>
+         <layout class="QFormLayout" name="layoutForm">
+          <item row="0" column="0">
+           <widget class="QLabel" name="defaultLayoutLabel">
+            <property name="text">
+             <string>Default Mode (switchable with Meta+\):</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QComboBox" name="kcfg_DefaultLayout">
+            <item>
+             <property name="text">
+              <string>master-stack</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>dwindle</string>
+             </property>
+            </item>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="defaultMastersLabel">
+            <property name="text">
+             <string>Default Master Windows:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QSpinBox" name="kcfg_DefaultMasterCount">
+            <property name="minimum">
+             <number>1</number>
+            </property>
+            <property name="maximum">
+             <number>10</number>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="masterRatioLabel">
+            <property name="text">
+             <string>Master Pane Width (%):</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QSpinBox" name="kcfg_MasterRatioPercent">
+            <property name="minimum">
+             <number>15</number>
+            </property>
+            <property name="maximum">
+             <number>85</number>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+
+     <!-- TAB 2: GAPS & BORDERS -->
+     <widget class="QWidget" name="tabGapsBorders">
+      <attribute name="title">
+       <string>Window Gaps &amp; Theme Borders</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="gapsBordersLayout">
+       <item>
+        <widget class="QGroupBox" name="gapsGroup">
+         <property name="title">
+          <string>Window Gaps (px)</string>
+         </property>
+         <layout class="QFormLayout" name="gapsForm">
+          <item row="0" column="0">
+           <widget class="QLabel" name="innerGapLabel">
+            <property name="text">
+             <string>Inner Gap (Between Windows):</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QSpinBox" name="kcfg_InnerGap">
+            <property name="maximum">
+             <number>100</number>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="outerTopLabel">
+            <property name="text">
+             <string>Outer Top Gap:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QSpinBox" name="kcfg_OuterGapTop">
+            <property name="maximum">
+             <number>200</number>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="outerBottomLabel">
+            <property name="text">
+             <string>Outer Bottom Gap:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QSpinBox" name="kcfg_OuterGapBottom">
+            <property name="maximum">
+             <number>200</number>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="0">
+           <widget class="QLabel" name="outerLeftLabel">
+            <property name="text">
+             <string>Outer Left Gap:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="1">
+           <widget class="QSpinBox" name="kcfg_OuterGapLeft">
+            <property name="maximum">
+             <number>200</number>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="0">
+           <widget class="QLabel" name="outerRightLabel">
+            <property name="text">
+             <string>Outer Right Gap:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="1">
+           <widget class="QSpinBox" name="kcfg_OuterGapRight">
+            <property name="maximum">
+             <number>200</number>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+
+       <item>
+        <widget class="QGroupBox" name="bordersGroup">
+         <property name="title">
+          <string>Borders &amp; Plasma Theme Colors</string>
+         </property>
+         <layout class="QVBoxLayout" name="bordersVBox">
+          <item>
+           <layout class="QHBoxLayout" name="borderModeRow">
+            <item>
+             <widget class="QLabel" name="borderModeLabel">
+              <property name="text">
+               <string>Border Mode:</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QComboBox" name="kcfg_BorderMode">
+              <item>
+               <property name="text">
+                <string>theme</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>active</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>none</string>
+               </property>
+              </item>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="kcfg_KeepBorderSingle">
+            <property name="text">
+             <string>Keep borders when only 1 tiled window is on screen</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="kcfg_RestoreBorderFloat">
+            <property name="text">
+             <string>Restore original window borders when untiled/floated</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+
+    </widget>
+   </item>
+  </layout>
+ </widget>
+</ui>

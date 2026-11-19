@@ -1,0 +1,19 @@
+{
+    "KPackageStructure": "KWin/Script",
+    "KPlugin": {
+        "Authors": [
+            {
+                "Name": "Custom KWin Script"
+            }
+        ],
+        "Description": "Selective Krohnkite-style tiler with multi-master stack, dwindle mode, manual float toggle, gaps, and theme border handling.",
+        "Icon": "preferences-system-windows-script-test",
+        "Id": "selective-tiler",
+        "License": "GPL-3.0",
+        "Name": "Selective Krohnkite Tiler",
+        "Version": "0.10.0"
+    },
+    "X-KDE-ConfigModule": "kwin/effects/configs/kcm_kwin4_genericscripted",
+    "X-Plasma-API": "javascript",
+    "X-Plasma-MainScript": "code/main.js"
+}

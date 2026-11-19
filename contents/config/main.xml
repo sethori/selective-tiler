@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kcfg xmlns="http://www.kde.org/standards/kcfg/1.0"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.kde.org/standards/kcfg/1.0
+                          http://www.kde.org/standards/kcfg/1.0/kcfg.xsd">
+    <kcfgfile name=""/>
+    <group name="">
+        <!-- Opt-In Applications -->
+        <entry name="TiledApps" type="String">
+            <label>Comma-separated list of application classes to auto-tile</label>
+            <default></default>
+        </entry>
+
+        <!-- Window Gaps -->
+        <entry name="InnerGap" type="Int">
+            <label>Inner gap between tiled windows</label>
+            <default>8</default>
+        </entry>
+        <entry name="OuterGapTop" type="Int">
+            <label>Top outer screen gap</label>
+            <default>10</default>
+        </entry>
+        <entry name="OuterGapBottom" type="Int">
+            <label>Bottom outer screen gap</label>
+            <default>10</default>
+        </entry>
+        <entry name="OuterGapLeft" type="Int">
+            <label>Left outer screen gap</label>
+            <default>10</default>
+        </entry>
+        <entry name="OuterGapRight" type="Int">
+            <label>Right outer screen gap</label>
+            <default>10</default>
+        </entry>
+
+        <!-- Border Settings -->
+        <entry name="BorderMode" type="String">
+            <label>Border rendering mode (theme, none, active)</label>
+            <default>theme</default>
+        </entry>
+        <entry name="KeepBorderSingle" type="Bool">
+            <label>Keep borders when only 1 tiled window is visible</label>
+            <default>true</default>
+        </entry>
+        <entry name="RestoreBorderFloat" type="Bool">
+            <label>Restore original borders when a window floats</label>
+            <default>true</default>
+        </entry>
+
+        <!-- Layout Engine & Multi-Master -->
+        <entry name="DefaultLayout" type="String">
+            <label>Default tiling layout mode (master-stack or dwindle)</label>
+            <default>master-stack</default>
+        </entry>
+        <entry name="DefaultMasterCount" type="Int">
+            <label>Default number of master windows</label>
+            <default>1</default>
+        </entry>
+        <entry name="MasterRatioPercent" type="Int">
+            <label>Master pane width percentage</label>
+            <default>50</default>
+        </entry>
+    </group>
+</kcfg>

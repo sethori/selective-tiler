@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>SelectiveTilerConfig</class>
+ <widget class="QWidget" name="SelectiveTilerConfig">
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QGroupBox" name="appsGroup">
+     <property name="title">
+      <string>Opt-In Applications (Auto-Tile Allowlist)</string>
+     </property>
+     <layout class="QVBoxLayout" name="appsLayout">
+      <item>
+       <widget class="QLabel" name="appsHint">
+        <property name="text">
+         <string>Leave empty to auto-tile nothing by default. Enter comma-separated window classes (e.g., konsole, kitty, org.kde.dolphin, code):</string>
+        </property>
+        <property name="wordWrap">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="kcfg_TiledApps"/>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="gapsGroup">
+     <property name="title">
+      <string>Window Gaps (px)</string>
+     </property>
+     <layout class="QFormLayout" name="gapsLayout">
+      <item row="0" column="0">
+       <widget class="QLabel" name="innerGapLabel">
+        <property name="text">
+         <string>Inner Gap (Between Windows):</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QSpinBox" name="kcfg_InnerGap">
+        <property name="maximum">
+         <number>100</number>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="outerTopLabel">
+        <property name="text">
+         <string>Outer Top Gap:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QSpinBox" name="kcfg_OuterGapTop">
+        <property name="maximum">
+         <number>200</number>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="outerBottomLabel">
+        <property name="text">
+         <string>Outer Bottom Gap:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QSpinBox" name="kcfg_OuterGapBottom">
+        <property name="maximum">
+         <number>200</number>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0">
+       <widget class="QLabel" name="outerLeftLabel">
+        <property name="text">
+         <string>Outer Left Gap:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1">
+       <widget class="QSpinBox" name="kcfg_OuterGapLeft">
+        <property name="maximum">
+         <number>200</number>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="0">
+       <widget class="QLabel" name="outerRightLabel">
+        <property name="text">
+         <string>Outer Right Gap:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="1">
+       <widget class="QSpinBox" name="kcfg_OuterGapRight">
+        <property name="maximum">
+         <number>200</number>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="bordersGroup">
+     <property name="title">
+      <string>Window Borders &amp; Layout</string>
+     </property>
+     <layout class="QVBoxLayout" name="bordersLayout">
+      <item>
+       <widget class="QCheckBox" name="kcfg_HideTiledBorders">
+        <property name="text">
+         <string>Remove window borders/titlebars on tiled windows</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="kcfg_KeepBorderSingle">
+        <property name="text">
+         <string>Keep borders when only 1 tiled window is on the screen</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="kcfg_RestoreBordersOnUntile">
+        <property name="text">
+         <string>Restore original borders when a window is untiled</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+</ui>
