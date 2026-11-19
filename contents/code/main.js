@@ -1,5 +1,5 @@
 /**
- * Selective Krohnkite-Style Tiler for KDE Plasma 6.8 (KWin 6 API)
+ * Selective Tiler for KDE Plasma 6 (KWin 6 API)
  * Version 0.0.0
  *
  * Features:
@@ -72,6 +72,7 @@ function loadConfiguration() {
 function isManageable(win) {
     if (!win || win.deleted) return false;
     if (!win.normalWindow || win.dialog || win.splash || win.utility || win.specialWindow) return false;
+    if (win.transient) return false; // child windows (properties, settings) of another window
     if (!win.moveable || !win.resizeable) return false;
     return true;
 }
@@ -81,6 +82,7 @@ function getWindowMeta(win) {
     if (!windowStateMap.has(id)) {
         windowStateMap.set(id, {
             isManuallyFloating: null,
+            isMaximized: false,
             floatGeometry: {
                 x: win.frameGeometry.x,
                 y: win.frameGeometry.y,
@@ -97,6 +99,7 @@ function shouldTileWindow(win) {
     if (win.minimized || win.fullScreen) return false;
 
     const meta = getWindowMeta(win);
+    if (meta.isMaximized) return false;
     if (meta.isManuallyFloating !== null) {
         return !meta.isManuallyFloating;
     }
@@ -105,14 +108,48 @@ function shouldTileWindow(win) {
         return false;
     }
 
+    return matchesAllowlist(win);
+}
+
+/**
+ * Exact match against the window class, the resource name, or the last
+ * dot-separated part of the class (so "konsole" matches "org.kde.konsole").
+ * No substring matching: a short entry like "st" must not catch unrelated apps.
+ */
+function matchesAllowlist(win) {
     const resClass = String(win.resourceClass || "").toLowerCase();
     const resName = String(win.resourceName || "").toLowerCase();
+    const classTail = resClass.slice(resClass.lastIndexOf(".") + 1);
 
     return CONFIG.tiledApps.some(allowed =>
         resClass === allowed ||
         resName === allowed ||
-        resClass.indexOf(allowed) !== -1
+        classTail === allowed
     );
+}
+
+function copyGeometry(g) {
+    return { x: g.x, y: g.y, width: g.width, height: g.height };
+}
+
+/** Fallback floating size when we never saw the window untiled: 60% of the screen, centred. */
+function defaultFloatGeometry(win) {
+    const area = workspace.clientArea(KWin.PlacementArea, win.output, workspace.currentDesktop);
+    const width = Math.round(area.width * 0.6);
+    const height = Math.round(area.height * 0.6);
+    return {
+        x: area.x + Math.round((area.width - width) / 2),
+        y: area.y + Math.round((area.height - height) / 2),
+        width: width,
+        height: height
+    };
+}
+
+/** Connect to a signal only if this KWin build exposes it. */
+function connectIfPresent(obj, signalName, handler) {
+    if (obj && obj[signalName] && typeof obj[signalName].connect === "function") {
+        obj[signalName].connect(handler);
+    }
 }
 
 function setWindowBounds(win, x, y, w, h) {
@@ -327,31 +364,17 @@ function toggleFloatActiveWindow() {
 
     if (currentlyTiled) {
         meta.isManuallyFloating = true;
-        if (meta.floatGeometry) {
-            setWindowBounds(
-                win,
-                meta.floatGeometry.x,
-                meta.floatGeometry.y,
-                meta.floatGeometry.width,
-                meta.floatGeometry.height
-            );
-        }
+        const g = meta.floatGeometry || defaultFloatGeometry(win);
+        setWindowBounds(win, g.x, g.y, g.width, g.height);
     } else {
-        meta.floatGeometry = {
-            x: win.frameGeometry.x,
-            y: win.frameGeometry.y,
-            width: win.frameGeometry.width,
-            height: win.frameGeometry.height
-        };
+        meta.floatGeometry = copyGeometry(win.frameGeometry);
         meta.isManuallyFloating = false;
     }
     retileAll();
 }
 
 function toggleLayoutMode() {
-    const win = workspace.activeWindow;
-    const screen = win ? win.output : workspace.activeScreen;
-    const surfaceKey = getSurfaceKey(screen, workspace.currentDesktop, workspace.currentActivity);
+    const surfaceKey = activeSurfaceKey();
     const current = getSurfaceLayoutMode(surfaceKey);
 
     surfaceLayoutMap.set(surfaceKey, (current === "master-stack") ? "dwindle" : "master-stack");
@@ -414,19 +437,29 @@ function addActiveWindowToMaster() {
     retileAll();
 }
 
-function increaseMasterCapacity() {
+function activeSurfaceKey() {
     const win = workspace.activeWindow;
     const screen = win ? win.output : workspace.activeScreen;
-    const surfaceKey = getSurfaceKey(screen, workspace.currentDesktop, workspace.currentActivity);
-    setSurfaceMasterCount(surfaceKey, getSurfaceMasterCount(surfaceKey) + 1);
+    return getSurfaceKey(screen, workspace.currentDesktop, workspace.currentActivity);
+}
+
+/** Number of windows tiled on the surface at the last retile (at least 1). */
+function tiledCount(surfaceKey) {
+    return Math.max(1, (surfaceWindowOrder.get(surfaceKey) || []).length);
+}
+
+function increaseMasterCapacity() {
+    const surfaceKey = activeSurfaceKey();
+    const next = Math.min(tiledCount(surfaceKey), getSurfaceMasterCount(surfaceKey) + 1);
+    setSurfaceMasterCount(surfaceKey, next);
     retileAll();
 }
 
 function decreaseMasterCapacity() {
-    const win = workspace.activeWindow;
-    const screen = win ? win.output : workspace.activeScreen;
-    const surfaceKey = getSurfaceKey(screen, workspace.currentDesktop, workspace.currentActivity);
-    setSurfaceMasterCount(surfaceKey, Math.max(1, getSurfaceMasterCount(surfaceKey) - 1));
+    const surfaceKey = activeSurfaceKey();
+    // Snap down to the visible window count first so every press has a visible effect.
+    const current = Math.min(tiledCount(surfaceKey), getSurfaceMasterCount(surfaceKey));
+    setSurfaceMasterCount(surfaceKey, current - 1);
     retileAll();
 }
 
@@ -512,16 +545,19 @@ function hookWindow(win) {
     win.fullScreenChanged.connect(retileAll);
     win.desktopsChanged.connect(retileAll);
     win.outputChanged.connect(retileAll);
+    connectIfPresent(win, "activitiesChanged", retileAll);
+    // Some apps (Electron, Java) set their class after the window appears.
+    connectIfPresent(win, "windowClassChanged", retileAll);
+
+    // A maximized window steps out of the layout; unmaximizing puts it back.
+    connectIfPresent(win, "maximizedAboutToChange", function (mode) {
+        getWindowMeta(win).isMaximized = Number(mode) !== 0;
+        retileAll();
+    });
 
     win.interactiveMoveResizeFinished.connect(function () {
         if (!shouldTileWindow(win)) {
-            const meta = getWindowMeta(win);
-            meta.floatGeometry = {
-                x: win.frameGeometry.x,
-                y: win.frameGeometry.y,
-                width: win.frameGeometry.width,
-                height: win.frameGeometry.height
-            };
+            getWindowMeta(win).floatGeometry = copyGeometry(win.frameGeometry);
         }
         retileAll();
     });
@@ -545,7 +581,13 @@ function init() {
 
     const existing = workspace.windowList();
     for (let i = 0; i < existing.length; i++) {
-        hookWindow(existing[i]);
+        const win = existing[i];
+        // Windows that already match may still be in a layout from a previous run,
+        // so their current geometry is not a real floating position.
+        if (isManageable(win) && shouldTileWindow(win)) {
+            getWindowMeta(win).floatGeometry = null;
+        }
+        hookWindow(win);
     }
 
     workspace.windowAdded.connect(hookWindow);
@@ -553,6 +595,8 @@ function init() {
     workspace.currentDesktopChanged.connect(retileAll);
     workspace.screensChanged.connect(retileAll);
     workspace.currentActivityChanged.connect(retileAll);
+    // Screen arrangement or resolution changes.
+    connectIfPresent(workspace, "virtualScreenGeometryChanged", retileAll);
 
     // Live update triggered whenever user hits "Apply" in System Settings
     if (options && options.configChanged) {

@@ -22,6 +22,24 @@ and the first version that included those changes.
 
 ## Unreleased
 
+### Changed
+- The allowlist now matches window classes exactly. An entry matches the class,
+  the resource name, or the last part of a dotted class (`konsole` still matches
+  `org.kde.konsole`), but no longer matches any class that merely contains it,
+  so `code` no longer catches unrelated apps. Check your list if an app stops tiling.
+- Maximizing a tiled window now takes it out of the layout instead of being
+  undone on the next retile. Unmaximizing puts it back.
+
+### Fixed
+- Child windows (properties, settings and similar windows owned by another
+  window) are no longer tiled.
+- `Meta+I` no longer raises the master count past the number of tiled windows,
+  and `Meta+D` has a visible effect on the first press.
+- Floating a window that was already tiled when the script started now gives it
+  a centred size instead of leaving it at its tiled position.
+- Windows are retiled when they move between activities, when an app sets its
+  window class late, and when the screen arrangement changes.
+
 ### Removed
 - Window border handling (the `theme`/`active`/`none` border modes and the two
   border checkboxes). It never worked reliably, and the script no longer

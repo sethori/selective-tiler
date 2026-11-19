@@ -51,6 +51,7 @@ journalctl --user -f | grep -i kwin         # script logs / errors
 - `contents/ui/config.ui.xml` is stale: it references `HideTiledBorders` and `RestoreBordersOnUntile`, which aren't in `main.xml`. Delete it or reconcile it.
 - The master ratio changed with `Meta+H`/`Meta+L` is runtime-only and resets on reload.
 - `metadata.json` lists the author as "Custom KWin Script".
+- Resizing a panel (work-area change) does not trigger a retile until the next window event.
 - No automated behaviour tests (the code needs a running KWin).
 
 ## How to work here (owner preferences)
