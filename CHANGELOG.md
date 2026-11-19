@@ -20,7 +20,7 @@ and the first version that included those changes.
 - Version numbering restarts at 1.0.1 under the new scheme (previously 0.10.0).
   The version in source checkouts is now the placeholder `0.0.0`.
 
-## Unreleased
+## 2026-11-19 (from 1.0.2)
 
 ### Changed
 - The allowlist now matches window classes exactly. An entry matches the class,
