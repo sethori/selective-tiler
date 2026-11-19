@@ -1,31 +1,35 @@
 # Changelog
 
-All notable changes to this project will be documented in this file.
+All notable changes to this project are documented here. The format is based on
+[Keep a Changelog](https://keepachangelog.com/en/1.1.0/), but entries are grouped
+by **date** rather than by version, because versions are assigned automatically.
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+Every push to `main` is released automatically as `vX.Y.Z` (see AGENTS.md), and
+each GitHub release lists the commits it contains. Each heading gives the date
+and the first version that included those changes.
 
-## [Unreleased]
-
----
-
-## [0.10.0] - 2026-10-17
-
-### Added
-- **Multi-Master Layout Engine:** Master-Stack mode now divides the master column dynamically across any number of master windows.
-- **Promote Without Demoting:** Added shortcut `Meta+Shift+Return` (*Add Active Window to Master*) to promote the focused stack window into the master column and increment the master capacity by 1, preserving all previous masters.
-- **Master Count Adjustments:** Added shortcuts `Meta+I` (increase master count) and `Meta+D` (decrease master count).
-- **Default Master Count Configuration:** Added `DefaultMasterCount` to `main.xml` and `config.ui` to configure how many master windows are used by default.
-- **Live System Settings Reload:** Enhanced `options.configChanged` signal handler to re-read configuration and re-tile all displays the moment "Apply" or "OK" is clicked in System Settings, without needing manual DBus commands.
-
----
-
-## [0.9.0] - 2026-10-17
+## 2026-11-19 (from 1.0.1)
 
 ### Added
-- **Opt-in Application Filtering:** Default behavior where no windows are auto-tiled unless added to the allowlist or manually toggled.
-- **Dual Layout Engines:** Master-Stack and Dwindle / Spiral modes, switchable via `Meta+\`.
-- **Manual Float Control:** `Meta+F` toggle preserving previous floating geometry on float.
-- **Theme-Integrated Border Modes:** `theme` (accent colors), `active`, and `none`.
-- **Window Gaps:** Configurable inner and outer gaps.
-- **KConfigXT & Qt UI Integration:** Full GUI inside KDE System Settings.
+- Automatic versioning: every push to `main` publishes a GitHub release with a
+  ready-to-install `.kwinscript` package and a `SHA256SUMS` file.
+- `scripts/build.py` to build the `.kwinscript` package locally.
+- Shared agent instructions (`AGENTS.md`, with `CLAUDE.md`/`GEMINI.md` pointing to it).
+
+### Changed
+- Version numbering restarts at 1.0.1 under the new scheme (previously 0.10.0).
+  The version in source checkouts is now the placeholder `0.0.0`.
+
+## 2026-10-17 (pre-release 0.9.0 – 0.10.0)
+
+### Added
+- Opt-in application allowlist: nothing is tiled unless its window class is listed or it is toggled manually.
+- Master-Stack and Dwindle/Spiral layouts, switchable with `Meta+\`.
+- `Meta+F` float/tile toggle that restores the previous floating geometry.
+- Border modes `theme` (accent colors), `active` and `none`.
+- Configurable inner and outer gaps.
+- Full settings page in KDE System Settings.
+- Multi-master: the master column splits across any number of master windows.
+- `Meta+Shift+Return` adds the focused window to the masters without demoting others.
+- `Meta+I` / `Meta+D` increase/decrease the master count, and `DefaultMasterCount` sets the default.
+- Settings apply live when you click Apply/OK in System Settings.

@@ -1,0 +1,73 @@
+name: build
+
+on:
+  push:
+  pull_request:
+
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # need all tags to compute the next version
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Test
+        run: |
+          python -m unittest discover -s tests -v
+          node --check contents/code/main.js
+
+      - name: Compute and stamp version
+        id: version
+        run: |
+          if [ "${{ github.event_name }}" = "push" ] && [ "${{ github.ref }}" = "refs/heads/main" ]; then
+            VERSION=$(python scripts/version.py next)
+          else
+            VERSION="0.0.0-dev.${GITHUB_SHA::7}"
+          fi
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          if [ "${VERSION#0.0.0-dev}" = "$VERSION" ]; then
+            python scripts/version.py stamp "$VERSION"
+          fi
+
+      - name: Build package
+        run: |
+          python scripts/build.py
+          cd dist && sha256sum *.kwinscript > SHA256SUMS && cat SHA256SUMS
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: selective-tiler-${{ steps.version.outputs.version }}
+          path: dist/*
+
+      - name: Publish release
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          CUR=$(python scripts/version.py current)
+          if [ "$CUR" != "none" ]; then RANGE="v$CUR..HEAD"; else RANGE="HEAD"; fi
+          {
+            echo "## Changes"
+            git log --no-merges --format='- %s' $RANGE
+            echo
+            echo "See CHANGELOG.md for the curated history."
+          } > notes.md
+          gh release create "v$VERSION" dist/*.kwinscript dist/SHA256SUMS \
+            --target "$GITHUB_SHA" --title "v$VERSION" --notes-file notes.md

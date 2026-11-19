@@ -1,6 +1,6 @@
 /**
  * Selective Krohnkite-Style Tiler for KDE Plasma 6.8 (KWin 6 API)
- * Version 0.10.0
+ * Version 0.0.0
  *
  * Features:
  * - Strict Opt-In Application Allowlist (nothing tiled by default).
