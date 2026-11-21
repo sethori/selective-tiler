@@ -43,7 +43,8 @@ journalctl --user -f | grep -i kwin         # script logs / errors
 
 - 2026-10-17: 0.9.0, the first working tiler (allowlist, two layouts, float toggle, gaps, borders, settings UI).
 - 2026-10-17: 0.10.0, multi-master, master count shortcuts, live settings reload.
-- 2026-11-19: agent docs, automatic versioning and CI releases added. The next main push becomes 1.0.1.
+- 2026-11-19: agent docs, automatic versioning and CI releases added, released as 1.0.1.
+- 2026-11-19: 1.0.2, exact allowlist matching, child windows skipped, maximize leaves the layout, border handling removed.
 
 ## Known open issues
 
